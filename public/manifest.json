@@ -1,0 +1,16 @@
+{
+  "name": "Suresh.AI — AI-Powered Engineering Learning",
+  "short_name": "Suresh.AI",
+  "description": "Master engineering with AI-powered learning. Notes, MCQs, interview prep, PYQs, roadmaps, and AI tutoring.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

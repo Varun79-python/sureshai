@@ -48,7 +48,7 @@ function SearchContent() {
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <AnimatedSection className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-            Search <span className="text-gradient">Suresh.AI</span>
+            Search <span className="text-gradient-brand">Suresh.AI</span>
           </h1>
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />

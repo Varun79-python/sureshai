@@ -1,0 +1,142 @@
+"use client";
+
+import { useState, useRef, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
+import { Send, Square } from "lucide-react";
+
+const MAX_CHARS = 4000;
+
+interface ChatInputProps {
+  onSend: (message: string) => void;
+  onStop?: () => void;
+  isTyping: boolean;
+  disabled?: boolean;
+  placeholder?: string;
+}
+
+export function ChatInput({ onSend, onStop, isTyping, disabled, placeholder }: ChatInputProps) {
+  const [input, setInput] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const sendingRef = useRef(false);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 200) + "px";
+    }
+  }, [input]);
+
+  // Focus textarea on mount and when typing stops
+  useEffect(() => {
+    if (!isTyping && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isTyping]);
+
+  const handleSend = useCallback(() => {
+    const trimmed = input.trim();
+    if (!trimmed || isTyping || disabled || sendingRef.current) return;
+    if (trimmed.length > MAX_CHARS) return;
+
+    sendingRef.current = true;
+    onSend(trimmed);
+    setInput("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
+    // Reset guard after a tick
+    setTimeout(() => {
+      sendingRef.current = false;
+    }, 100);
+  }, [input, isTyping, disabled, onSend]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    },
+    [handleSend]
+  );
+
+  const charCount = input.length;
+  const isNearLimit = charCount > MAX_CHARS * 0.8;
+  const isOverLimit = charCount > MAX_CHARS;
+
+  return (
+    <div className="border-t border-border bg-background/80 backdrop-blur-xl" role="region" aria-label="Chat input">
+      <div className="max-w-3xl mx-auto px-4 py-4">
+        <div
+          className={`relative flex items-end gap-2 bg-secondary rounded-2xl border transition-all duration-300 px-4 py-3 ${
+            isOverLimit
+              ? "border-danger focus-within:border-danger focus-within:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]"
+              : "border-border focus-within:border-primary/50 focus-within:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+          }`}
+        >
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => {
+              if (e.target.value.length <= MAX_CHARS + 100) {
+                setInput(e.target.value);
+              }
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder || "Ask me anything... (Shift+Enter for new line)"}
+            disabled={isTyping || disabled}
+            rows={1}
+            aria-label="Message input"
+            aria-invalid={isOverLimit}
+            className="flex-1 bg-transparent text-sm text-foreground placeholder-muted-foreground outline-none resize-none disabled:opacity-50 min-h-[24px] max-h-[200px] leading-relaxed"
+          />
+          <div className="flex items-center gap-1 shrink-0 pb-0.5">
+            {isTyping ? (
+              <motion.button
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                onClick={onStop}
+                className="w-9 h-9 rounded-xl bg-destructive hover:bg-destructive/90 flex items-center justify-center transition-colors active:scale-95"
+                title="Stop generating"
+                aria-label="Stop generating response"
+              >
+                <Square className="h-4 w-4 text-white fill-white" />
+              </motion.button>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSend}
+                disabled={!input.trim() || disabled || isOverLimit}
+                className="w-9 h-9 rounded-xl bg-gradient-to-r from-primary to-accent flex items-center justify-center shrink-0 disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-md transition-all active:scale-95"
+                aria-label="Send message"
+              >
+                <Send className="h-4 w-4 text-white" />
+              </motion.button>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-between mt-2 px-1">
+          <p className="text-[10px] text-muted-foreground">
+            SUresh AI may occasionally roast you. It&apos;s out of love. Probably.
+          </p>
+          <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+            {charCount > 0 && (
+              <span className={`${isOverLimit ? "text-danger" : isNearLimit ? "text-warning" : ""}`}>
+                {charCount.toLocaleString()}/{MAX_CHARS.toLocaleString()}
+              </span>
+            )}
+            <span className="hidden sm:flex items-center gap-1">
+              <kbd className="px-1 py-0.5 rounded bg-secondary border border-border text-[9px]">Enter</kbd>
+              send
+            </span>
+            <span className="hidden sm:flex items-center gap-1">
+              <kbd className="px-1 py-0.5 rounded bg-secondary border border-border text-[9px]">Shift</kbd>+<kbd className="px-1 py-0.5 rounded bg-secondary border border-border text-[9px]">Enter</kbd>
+              newline
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

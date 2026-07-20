@@ -46,10 +46,11 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-sm text-primary font-medium mb-8"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/10 via-blue-500/10 to-cyan-500/10 border border-indigo-500/20 text-sm font-medium mb-8"
           >
-            <Sparkles className="h-3.5 w-3.5" />
-            The Smartest Way to Learn Engineering
+            <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
+            <span className="text-gradient-brand font-bold">Suresh.AI</span>
+            <span className="text-muted-foreground">— The Smartest Way to Learn Engineering</span>
           </motion.div>
 
           {/* Main heading */}

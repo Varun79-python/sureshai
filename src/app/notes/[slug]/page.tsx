@@ -1,136 +1,86 @@
-"use client";
-
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
+import { getNoteContent, getAllNotes, notesContent } from "@/lib/data/notes-content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Bookmark, Download, Share2, Printer, Clock, User } from "lucide-react";
+import { ArrowLeft, Bookmark, Download, Printer, Share2, Clock, User, BookOpen } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
-const notesData: Record<string, { title: string; subject: string; content: string; author: string; readTime: string }> = {
-  "complete-guide-data-structures": {
-    title: "Complete Guide to Data Structures",
-    subject: "Data Structures",
-    author: "Dr. Suresh Kumar",
-    readTime: "25 min",
-    content: `
-## Introduction to Data Structures
+// HTML sanitizer — escapes dangerous characters to prevent XSS
+function sanitizeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-Data structures are a way of organizing and storing data so that it can be accessed and modified efficiently. They are fundamental to computer science and programming.
+export function generateStaticParams() {
+  return Object.keys(notesContent).map((slug) => ({ slug }));
+}
 
-### Why Data Structures Matter
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await props.params;
+  const note = getNoteContent(slug);
+  if (!note) return { title: "Note Not Found" };
+  return {
+    title: `${note.title} — Suresh.AI Notes`,
+    description: note.excerpt,
+    openGraph: { title: note.title, description: note.excerpt, type: "article" },
+  };
+}
 
-- **Efficiency**: Choose the right structure for optimal time/space complexity
-- **Organization**: Keep data organized for easy access
-- **Reusability**: Standard structures are well-tested and reliable
+export default async function NoteDetailPage(props: { params: Promise<{ slug: string }> }) {
+  const { slug } = await props.params;
+  const note = getNoteContent(slug);
+  if (!note) notFound();
 
-## Arrays
-
-An array is a collection of elements stored at contiguous memory locations.
-
-**Properties:**
-- Fixed size (in most languages)
-- O(1) random access
-- O(n) insertion/deletion
-- Cache-friendly
-
-**Common Operations:**
-- Traversal: O(n)
-- Access by index: O(1)
-- Search (unsorted): O(n)
-- Search (sorted, binary): O(log n)
-- Insert at end: O(1) amortized
-- Insert at beginning: O(n)
-- Delete: O(n)
-
-## Linked Lists
-
-A linked list consists of nodes where each node contains data and a reference to the next node.
-
-**Types:**
-1. Singly Linked List
-2. Doubly Linked List
-3. Circular Linked List
-
-**Properties:**
-- Dynamic size
-- O(1) insertion/deletion at known position
-- O(n) access time
-- Extra memory for pointers
-
-## Stacks
-
-A stack follows LIFO (Last In, First Out) principle.
-
-**Operations:**
-- push(): Add element to top
-- pop(): Remove element from top
-- peek(): View top element
-- isEmpty(): Check if empty
-
-**Applications:** Function calls, undo operations, expression evaluation
-
-## Queues
-
-A queue follows FIFO (First In, First Out) principle.
-
-**Types:** Simple Queue, Circular Queue, Priority Queue, Deque
-
-**Applications:** BFS, task scheduling, print spooling
-
-## Trees
-
-A tree is a hierarchical data structure with a root node and child nodes.
-
-**Binary Tree:** Each node has at most 2 children
-**Binary Search Tree (BST):** Left < Root < Right
-**AVL Tree:** Self-balancing BST
-**Heap:** Complete binary tree for priority queue
-
-**Traversals:**
-- Inorder: Left → Root → Right (sorted for BST)
-- Preorder: Root → Left → Right
-- Postorder: Left → Right → Root
-- Level Order: BFS
-
-## Graphs
-
-A graph consists of vertices (nodes) and edges connecting them.
-
-**Representations:** Adjacency Matrix, Adjacency List
-**Traversals:** DFS (stack/recursion), BFS (queue)
-
-**Applications:** Social networks, maps, recommendation systems
-    `,
-  },
-};
-
-export default function NoteDetailPage() {
-  const params = useParams();
-  const slug = params.slug as string;
-  const note = notesData[slug];
-
-  if (!note) {
-    notFound();
-  }
+  // Convert markdown-like content to sanitized HTML
+  const htmlContent = note.content
+    .split("\n")
+    .map((line) => {
+      if (line.startsWith("### ")) return `<h3>${sanitizeHtml(line.slice(4))}</h3>`;
+      if (line.startsWith("## ")) return `<h2>${sanitizeHtml(line.slice(3))}</h2>`;
+      if (line.startsWith("---")) return `<hr />`;
+      if (line.match(/^\d\.\s/)) return `<li>${sanitizeHtml(line.replace(/^\d\.\s/, ""))}</li>`;
+      if (line.startsWith("- ")) return `<li>${sanitizeHtml(line.slice(2))}</li>`;
+      if (line.startsWith("| ")) return sanitizeHtml(line);
+      if (line.startsWith("**") && line.endsWith("**")) return `<strong>${sanitizeHtml(line.slice(2, -2))}</strong>`;
+      if (line.match(/`[^`]+`/)) {
+        const safe = sanitizeHtml(line);
+        return `<p>${safe.replace(/`([^`]+)`/g, "<code>$1</code>")}</p>`;
+      }
+      if (line.trim() === "") return "";
+      return `<p>${sanitizeHtml(line)}</p>`;
+    })
+    .join("\n");
 
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <Link href="/notes" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+        <Link
+          href="/notes"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        >
           <ArrowLeft className="h-4 w-4" /> Back to Notes
         </Link>
 
         <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             <Badge variant="premium" size="sm">{note.subject}</Badge>
+            {note.tags.slice(0, 3).map((tag) => (
+              <Badge key={tag} variant="secondary" size="sm">{tag}</Badge>
+            ))}
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">{note.title}</h1>
+          <p className="text-muted-foreground mb-4">{note.excerpt}</p>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1"><User className="h-4 w-4" /> {note.author}</span>
             <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> {note.readTime}</span>
+            <span className="flex items-center gap-1"><BookOpen className="h-4 w-4" /> Study Material</span>
           </div>
-          <div className="flex gap-2 mt-6">
+          <div className="flex gap-2 mt-6 flex-wrap">
             <Button variant="outline" size="sm" className="gap-2"><Bookmark className="h-4 w-4" /> Save</Button>
             <Button variant="outline" size="sm" className="gap-2"><Download className="h-4 w-4" /> PDF</Button>
             <Button variant="outline" size="sm" className="gap-2"><Printer className="h-4 w-4" /> Print</Button>
@@ -138,21 +88,25 @@ export default function NoteDetailPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 lg:p-10">
-          <div className="prose prose-zinc dark:prose-invert max-w-none
-            prose-headings:font-bold prose-headings:tracking-tight
-            prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
-            prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
-            prose-p:text-base prose-p:leading-relaxed prose-p:text-muted-foreground
-            prose-strong:text-foreground
-            prose-code:text-sm prose-code:bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md
-            prose-pre:bg-secondary prose-pre:rounded-xl prose-pre:border prose-pre:border-border
-            prose-li:text-muted-foreground
-            prose-hr:border-border
-          ">
-            <div className="whitespace-pre-wrap leading-relaxed">{note.content}</div>
-          </div>
-        </div>
+        <article className="rounded-2xl border border-border bg-card p-6 sm:p-8 lg:p-10">
+          <div
+            className="prose prose-zinc dark:prose-invert max-w-none
+              prose-headings:font-bold prose-headings:tracking-tight
+              prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-border
+              prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-foreground
+              prose-p:text-base prose-p:leading-7 prose-p:text-muted-foreground prose-p:my-3
+              prose-strong:text-foreground prose-strong:font-semibold
+              prose-code:text-sm prose-code:bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-primary
+              prose-pre:bg-secondary prose-pre:rounded-xl prose-pre:border prose-pre:border-border prose-pre:p-4
+              prose-li:text-muted-foreground prose-li:my-1
+              prose-hr:border-border prose-hr:my-8
+              prose-table:w-full prose-table:border-collapse
+              prose-th:bg-secondary prose-th:px-4 prose-th:py-2 prose-th:text-left prose-th:text-sm prose-th:font-semibold
+              prose-td:px-4 prose-td:py-2 prose-td:text-sm prose-td:border-b prose-td:border-border
+            "
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
+          />
+        </article>
       </div>
     </div>
   );

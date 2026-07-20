@@ -32,7 +32,7 @@ const navLinks = [
   { href: "/mcqs", label: "MCQs", icon: PenSquare },
   { href: "/roadmaps", label: "Roadmaps", icon: Route },
   { href: "/projects", label: "Projects", icon: FlaskConical },
-  { href: "/ai", label: "AI", icon: Brain },
+  { href: "/ai", label: "AI Chat", icon: Brain },
   { href: "/blog", label: "Blog", icon: GraduationCap },
 ];
 
@@ -65,38 +65,47 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent shadow-sm group-hover:shadow-md transition-shadow">
-              <Sparkles className="h-4 w-4 text-white" />
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
+              <Sparkles className="h-5 w-5 text-white" />
+              <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="text-gradient">Suresh</span>
-              <span className="text-foreground">.AI</span>
+            <span className="text-xl font-bold tracking-tight">
+              <span className="text-gradient-brand">Suresh</span>
+              <span className="text-gradient-brand">.AI</span>
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => {
-              const Icon = link.icon;
+                  const Icon = link.icon;
               const isActive = pathname.startsWith(link.href);
+              const isAiLink = link.href === "/ai";
               return (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
                     "relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200",
-                    isActive
-                      ? "text-primary bg-primary/5"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                    isAiLink && !isActive && "text-primary/80 hover:text-primary",
+                    isAiLink && isActive && "bg-gradient-to-r from-primary/10 to-accent/10 text-primary border border-primary/20",
+                    !isAiLink && isActive && "text-primary bg-primary/5",
+                    !isAiLink && !isActive && "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                   )}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className={cn("h-4 w-4", isAiLink && "text-primary")} />
                   {link.label}
+                  {isAiLink && !isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  )}
                   {isActive && (
                     <motion.div
                       layoutId="nav-indicator"
-                      className="absolute inset-0 rounded-xl bg-primary/5 border border-primary/10"
+                      className={cn(
+                        "absolute inset-0 rounded-xl",
+                        isAiLink ? "bg-gradient-to-r from-primary/5 to-accent/5" : "bg-primary/5 border border-primary/10"
+                      )}
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}

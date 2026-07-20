@@ -3,22 +3,22 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { AnimatedSection } from "@/components/shared/animated-section";
-import { Search, FileText, Clock, User, Download, Share2, BookOpen } from "lucide-react";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
+import { AnimatedSection } from "@/components/shared/animated-section";
+import { Search, FileText, Clock, User, Download } from "lucide-react";
+import Link from "next/link";
 
 const notes = [
-  { title: "Complete Guide to Data Structures", slug: "complete-guide-data-structures", subject: "Data Structures", excerpt: "Arrays, Linked Lists, Stacks, Queues, Trees, Graphs — everything covered with examples.", author: "Dr. Suresh Kumar", readTime: "25 min", topics: 12, downloads: 3400 },
-  { title: "Operating System Concepts Explained", slug: "os-concepts-explained", subject: "Operating Systems", excerpt: "Deep dive into process management, memory management, file systems, and I/O.", author: "Prof. Meena Sharma", readTime: "30 min", topics: 15, downloads: 2800 },
-  { title: "Machine Learning Fundamentals", slug: "ml-fundamentals", subject: "Machine Learning", excerpt: "From linear regression to neural networks — a comprehensive overview of ML.", author: "Dr. Rajesh Patel", readTime: "35 min", topics: 18, downloads: 4200 },
-  { title: "DBMS Interview Questions & Answers", slug: "dbms-interview-qa", subject: "DBMS", excerpt: "Most frequently asked DBMS interview questions with detailed explanations.", author: "Ananya Gupta", readTime: "20 min", topics: 10, downloads: 1900 },
-  { title: "Computer Networks — Complete Notes", slug: "computer-networks-notes", subject: "Computer Networks", excerpt: "TCP/IP, OSI model, routing protocols, network security, and more.", author: "Prof. Vikram Singh", readTime: "40 min", topics: 20, downloads: 3100 },
-  { title: "Python Programming Handbook", slug: "python-handbook", subject: "Python Programming", excerpt: "Python from basics to advanced: OOP, modules, NumPy, Pandas, Flask.", author: "Sneha Reddy", readTime: "45 min", topics: 22, downloads: 5600 },
-  { title: "Digital Electronics Notes", slug: "digital-electronics-notes", subject: "Digital Electronics", excerpt: "Logic gates, Boolean algebra, flip-flops, counters, and multiplexers.", author: "Prof. Arun Kumar", readTime: "25 min", topics: 12, downloads: 2100 },
-  { title: "Thermodynamics Study Guide", slug: "thermodynamics-guide", subject: "Thermodynamics", excerpt: "Laws of thermodynamics, entropy, cycles, heat transfer, and refrigeration.", author: "Dr. Priya Patel", readTime: "30 min", topics: 14, downloads: 1800 },
-  { title: "Control Systems — Quick Reference", slug: "control-systems-reference", subject: "Control Systems", excerpt: "Transfer functions, stability, root locus, bode plots, state space.", author: "Prof. Meena Sharma", readTime: "20 min", topics: 10, downloads: 1500 },
-  { title: "Embedded Systems Programming", slug: "embedded-programming", subject: "Embedded Systems", excerpt: "ARM Cortex-M, GPIO, interrupts, RTOS, and IoT connectivity.", author: "Dr. Rajesh Patel", readTime: "35 min", topics: 16, downloads: 2400 },
+  { title: "Complete Guide to Data Structures", slug: "complete-guide-data-structures", subject: "Data Structures", excerpt: "Arrays, Linked Lists, Stacks, Queues, Trees, Graphs — everything covered with examples.", author: "Dr. Suresh Kumar", readTime: "25 min", tags: 8, downloads: 3400 },
+  { title: "Operating System Concepts Explained", slug: "os-concepts-explained", subject: "Operating Systems", excerpt: "Deep dive into process management, memory management, file systems, and I/O.", author: "Prof. Meena Sharma", readTime: "30 min", tags: 10, downloads: 2800 },
+  { title: "Machine Learning Fundamentals", slug: "ml-fundamentals", subject: "Machine Learning", excerpt: "From linear regression to neural networks — a comprehensive overview of ML.", author: "Dr. Rajesh Patel", readTime: "35 min", tags: 12, downloads: 4200 },
+  { title: "DBMS Interview Questions & Answers", slug: "dbms-interview-qa", subject: "DBMS", excerpt: "Most frequently asked DBMS interview questions with detailed explanations.", author: "Ananya Gupta", readTime: "20 min", tags: 6, downloads: 1900 },
+  { title: "Computer Networks — Complete Notes", slug: "computer-networks-notes", subject: "Computer Networks", excerpt: "TCP/IP, OSI model, routing protocols, network security, and more.", author: "Prof. Vikram Singh", readTime: "40 min", tags: 14, downloads: 3100 },
+  { title: "Python Programming Handbook", slug: "python-handbook", subject: "Python Programming", excerpt: "Python from basics to advanced: OOP, modules, NumPy, Pandas, Flask.", author: "Sneha Reddy", readTime: "45 min", tags: 22, downloads: 5600 },
+  { title: "Digital Electronics Notes", slug: "digital-electronics-notes", subject: "Digital Electronics", excerpt: "Logic gates, Boolean algebra, flip-flops, counters, and multiplexers.", author: "Prof. Arun Kumar", readTime: "25 min", tags: 8, downloads: 2100 },
+  { title: "Thermodynamics Study Guide", slug: "thermodynamics-guide", subject: "Thermodynamics", excerpt: "Laws of thermodynamics, entropy, cycles, heat transfer, and refrigeration.", author: "Dr. Priya Patel", readTime: "30 min", tags: 10, downloads: 1800 },
+  { title: "Control Systems — Quick Reference", slug: "control-systems-reference", subject: "Control Systems", excerpt: "Transfer functions, stability, root locus, bode plots, state space.", author: "Prof. Meena Sharma", readTime: "20 min", tags: 6, downloads: 1500 },
+  { title: "Embedded Systems Programming", slug: "embedded-programming", subject: "Embedded Systems", excerpt: "ARM Cortex-M, GPIO, interrupts, RTOS, and IoT connectivity.", author: "Dr. Rajesh Patel", readTime: "35 min", tags: 16, downloads: 2400 },
 ];
 
 const subjects = ["All", "Data Structures", "Operating Systems", "Machine Learning", "DBMS", "Computer Networks", "Python Programming", "Digital Electronics", "Thermodynamics", "Control Systems", "Embedded Systems"];
@@ -45,7 +45,7 @@ export default function NotesPage() {
             Beautifully Written <span className="text-gradient">Study Notes</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
-            Expert-crafted notes with syntax highlighting, diagrams, and interactive elements across all engineering subjects.
+            Expert-crafted notes with detailed explanations, examples, and code snippets across all engineering subjects.
           </p>
         </AnimatedSection>
 
@@ -81,7 +81,7 @@ export default function NotesPage() {
                       <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {note.readTime}</span>
                     </div>
                     <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
-                      <span>{note.topics} topics</span>
+                      <span>{note.tags} topics</span>
                       <span>·</span>
                       <span className="flex items-center gap-1"><Download className="h-3 w-3" /> {note.downloads.toLocaleString()}</span>
                     </div>

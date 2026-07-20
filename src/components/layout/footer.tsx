@@ -38,18 +38,17 @@ const footerLinks = [
       { label: "Blog", href: "/blog" },
       { label: "PYQs", href: "/pyqs" },
       { label: "Code Playground", href: "/playground" },
-      { label: "Community", href: "/community" },
-      { label: "Study Groups", href: "/study-groups" },
+      { label: "Search", href: "/search" },
+      { label: "AI Chat", href: "/ai" },
     ],
   },
   {
-    title: "Company",
+    title: "Platform",
     links: [
-      { label: "About", href: "/about" },
-      { label: "Privacy", href: "/privacy" },
-      { label: "Terms", href: "/terms" },
-      { label: "Contact", href: "/contact" },
-      { label: "Careers", href: "/careers" },
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Sign In", href: "/auth" },
+      { label: "Subjects", href: "/subjects" },
+      { label: "Roadmaps", href: "/roadmaps" },
     ],
   },
 ];
@@ -84,13 +83,12 @@ export function Footer() {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Brand */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent shadow-sm">
-              <Sparkles className="h-4 w-4 text-white" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 shadow-md group-hover:shadow-lg transition-all duration-300">
+              <Sparkles className="h-5 w-5 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight">
-              <span className="text-gradient">Suresh</span>
-              <span className="text-foreground">.AI</span>
+              <span className="text-gradient-brand">Suresh.AI</span>
             </span>
           </Link>
 

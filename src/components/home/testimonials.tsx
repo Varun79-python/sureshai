@@ -51,7 +51,7 @@ export function Testimonials() {
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Join 100,000+ engineering students who are learning smarter with
-            Suresh.AI.
+            <span className="text-gradient-brand">Suresh.AI</span>.
           </p>
         </AnimatedSection>
 
