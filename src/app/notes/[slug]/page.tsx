@@ -150,7 +150,7 @@ export default function NoteDetailPage() {
             prose-li:text-muted-foreground
             prose-hr:border-border
           ">
-            <div dangerouslySetInnerHTML={{ __html: note.content.replace(/\n/g, '<br/>').replace(/## (.*?)(<br\/>)/g, '<h2>$1</h2>').replace(/### (.*?)(<br\/>)/g, '<h3>$1</h3>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/^- (.*?)(<br\/>)/gm, '<li>$1</li>').replace(/(<li>.*?<\/li>)/s, '<ul>$1</ul>') }} />
+            <div className="whitespace-pre-wrap leading-relaxed">{note.content}</div>
           </div>
         </div>
       </div>

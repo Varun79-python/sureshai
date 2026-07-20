@@ -1,9 +1,9 @@
 import Link from "next/link";
 import {
   Sparkles,
-  Github,
-  Twitter,
-  Linkedin,
+  Globe,
+  MessageCircle,
+  Briefcase,
   Mail,
   Heart,
 } from "lucide-react";
@@ -102,7 +102,7 @@ export function Footer() {
               className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="GitHub"
             >
-              <Github className="h-5 w-5" />
+              <Globe className="h-5 w-5" />
             </Link>
             <Link
               href="https://twitter.com"
@@ -110,7 +110,7 @@ export function Footer() {
               className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Twitter"
             >
-              <Twitter className="h-5 w-5" />
+              <MessageCircle className="h-5 w-5" />
             </Link>
             <Link
               href="https://linkedin.com"
@@ -118,7 +118,7 @@ export function Footer() {
               className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="LinkedIn"
             >
-              <Linkedin className="h-5 w-5" />
+              <Briefcase className="h-5 w-5" />
             </Link>
             <Link
               href="mailto:hello@suresh.ai"

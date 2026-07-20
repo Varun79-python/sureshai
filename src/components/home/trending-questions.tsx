@@ -57,7 +57,7 @@ const questions = [
   },
 ];
 
-const difficultyColor = {
+const difficultyColor: Record<string, string> = {
   easy: "text-success bg-success/10 border-success/20",
   medium: "text-warning bg-warning/10 border-warning/20",
   hard: "text-danger bg-danger/10 border-danger/20",
