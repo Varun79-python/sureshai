@@ -50,10 +50,15 @@ export default function AIPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom
+  // Lock scroll to newest message — instant, no smooth (ChatGPT-style precision)
+  const lockScrollToBottom = useCallback(() => {
+    const feed = chatContainerRef.current;
+    if (feed) feed.scrollTop = feed.scrollHeight;
+  }, []);
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, streamingText]);
+    lockScrollToBottom();
+  }, [messages, streamingText, lockScrollToBottom]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -108,7 +113,7 @@ export default function AIPage() {
   const lastAssistantId = lastAssistantMsg?.id ?? null;
 
   return (
-    <div className="h-full flex flex-col bg-background overflow-hidden pt-16">
+    <div className="ai-chat-page chat-layout-wrapper h-full flex flex-col bg-background overflow-hidden pt-16">
       {/* Sidebar */}
       <ChatSidebar
         conversations={conversations}
@@ -134,168 +139,189 @@ export default function AIPage() {
         </svg>
       </button>
 
-      {/* Main chat area */}
-      <main className="flex-1 flex flex-col overflow-hidden" role="main">
-        <div ref={chatContainerRef} className="flex-1 overflow-y-auto min-h-0">
-          <div className="max-w-3xl mx-auto px-4 py-6">
-            <AnimatePresence mode="wait">
-              {showEmptyState ? (
-                /* Welcome screen */
+      {/* ===== CHAT MESSAGE HISTORY — independently scrollable ===== */}
+      <div ref={chatContainerRef} className="chat-message-history flex-1 overflow-y-auto min-h-0">
+        <div className="mx-auto max-w-4xl px-4 py-8">
+          <AnimatePresence mode="wait">
+            {showEmptyState ? (
+              <motion.div
+                key="welcome"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+                className="flex flex-col items-center justify-center min-h-[60vh] text-center"
+              >
                 <motion.div
-                  key="welcome"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.4 }}
-                  className="flex flex-col items-center justify-center min-h-[60vh] text-center"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+                  className="w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 flex items-center justify-center shadow-xl mb-6"
+                  aria-hidden="true"
                 >
-                  {/* Logo */}
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-                    className="w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 flex items-center justify-center shadow-xl mb-6"
-                    aria-hidden="true"
-                  >
-                    <BrainCircuit className="h-10 w-10 text-white" />
-                  </motion.div>
-
-                  <motion.h1
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-3xl sm:text-4xl font-bold mb-2"
-                  >
-                    <span className="text-gradient-brand">Suresh AI</span>
-                  </motion.h1>
-
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-muted-foreground mb-8 max-w-md"
-                  >
-                    Your personal AI engineering tutor. Ask about algorithms, data structures,
-                    system design, interview prep, or any engineering topic.
-                  </motion.p>
-
-                  {/* Feature grid */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="grid grid-cols-2 gap-3 mb-8 w-full max-w-sm"
-                    role="list"
-                    aria-label="Capabilities"
-                  >
-                    {WELCOME_FEATURES.map((feat, i) => (
-                      <motion.div
-                        key={feat.label}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5 + i * 0.1 }}
-                        className="flex items-start gap-3 p-3 rounded-xl bg-secondary/50 border border-border text-left"
-                        role="listitem"
-                      >
-                        <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0" aria-hidden="true">
-                          {feat.icon}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">{feat.label}</p>
-                          <p className="text-[11px] text-muted-foreground">{feat.desc}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-
-                  {/* Quick starters */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.7 }}
-                    className="w-full max-w-md"
-                  >
-                    <p className="text-xs text-muted-foreground mb-3 font-medium">
-                      <Sparkles className="h-3 w-3 inline mr-1" aria-hidden="true" />
-                      Suggested questions
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Suggested questions">
-                      {QUICK_QUESTIONS.map((q) => (
-                        <button
-                          key={q}
-                          onClick={() => handleSend(q)}
-                          className="px-4 py-2 rounded-xl bg-secondary border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
-                        >
-                          {q}
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
+                  <BrainCircuit className="h-10 w-10 text-white" />
                 </motion.div>
-              ) : (
-                /* Messages */
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-3xl sm:text-4xl font-bold mb-2"
+                >
+                  <span className="text-gradient-brand">Suresh AI</span>
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-muted-foreground mb-8 max-w-md"
+                >
+                  Your personal AI engineering tutor. Ask about algorithms, data structures,
+                  system design, interview prep, or any engineering topic.
+                </motion.p>
+
                 <motion.div
-                  key="messages"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="grid grid-cols-2 gap-3 mb-8 w-full max-w-sm"
+                  role="list"
+                  aria-label="Capabilities"
+                >
+                  {WELCOME_FEATURES.map((feat, i) => (
+                    <motion.div
+                      key={feat.label}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 + i * 0.1 }}
+                      className="flex items-start gap-3 p-3 rounded-xl bg-secondary/50 border border-border text-left"
+                      role="listitem"
+                    >
+                      <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0" aria-hidden="true">
+                        {feat.icon}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{feat.label}</p>
+                        <p className="text-[11px] text-muted-foreground">{feat.desc}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="space-y-4"
-                  role="log"
-                  aria-label="Chat messages"
-                  aria-live="polite"
+                  transition={{ delay: 0.7 }}
+                  className="w-full max-w-md"
                 >
-                  {messages.map((msg) => (
-                    <ChatMessage
-                      key={msg.id}
-                      message={msg}
-                      isStreaming={msg.isStreaming}
-                      onCopy={handleCopy}
-                      onRegenerate={
-                        msg.role === "assistant" && !isTyping && !msg.error
-                          ? () => regenerateMessage(msg.id)
-                          : undefined
-                      }
-                      onFeedback={
-                        msg.role === "assistant" ? (fb) => setFeedback(msg.id, fb) : undefined
-                      }
-                      onSpeak={msg.role === "assistant" ? handleSpeak : undefined}
-                      showFollowUps={msg.id === lastAssistantId && !isTyping}
-                      onFollowUp={handleSend}
-                    />
-                  ))}
-
-                  {/* Typing indicator */}
-                  <AnimatePresence>
-                    {isTyping && messages.length > 0 && messages[messages.length - 1]?.role === "user" && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="flex gap-3"
-                        role="status"
-                        aria-label="AI is thinking"
+                  <p className="text-xs text-muted-foreground mb-3 font-medium">
+                    <Sparkles className="h-3 w-3 inline mr-1" aria-hidden="true" />
+                    Suggested questions
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Suggested questions">
+                    {QUICK_QUESTIONS.map((q) => (
+                      <button
+                        key={q}
+                        onClick={() => handleSend(q)}
+                        className="px-4 py-2 rounded-xl bg-secondary border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
                       >
-                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 flex items-center justify-center shrink-0 shadow-sm" aria-hidden="true">
-                          <BrainCircuit className="h-4 w-4 text-white" />
-                        </div>
-                        <div className="bg-card border border-border rounded-2xl rounded-tl-md px-5 py-3.5 shadow-sm">
-                          <div className="flex gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
-                            <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "200ms" }} />
-                            <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "400ms" }} />
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <div ref={messagesEndRef} />
+                        {q}
+                      </button>
+                    ))}
+                  </div>
                 </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="messages"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-4"
+                role="log"
+                aria-label="Chat messages"
+                aria-live="polite"
+              >
+                {messages.map((msg) => (
+                  <ChatMessage
+                    key={msg.id}
+                    message={msg}
+                    isStreaming={msg.isStreaming}
+                    onCopy={handleCopy}
+                    onRegenerate={
+                      msg.role === "assistant" && !isTyping && !msg.error
+                        ? () => regenerateMessage(msg.id)
+                        : undefined
+                    }
+                    onFeedback={
+                      msg.role === "assistant" ? (fb) => setFeedback(msg.id, fb) : undefined
+                    }
+                    onSpeak={msg.role === "assistant" ? handleSpeak : undefined}
+                    showFollowUps={msg.id === lastAssistantId && !isTyping}
+                    onFollowUp={handleSend}
+                  />
+                ))}
 
-        {/* Input */}
+                <AnimatePresence>
+                  {isTyping && messages.length > 0 && messages[messages.length - 1]?.role === "user" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="flex gap-3"
+                      role="status"
+                      aria-label="AI is thinking"
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 flex items-center justify-center shrink-0 shadow-sm" aria-hidden="true">
+                        <BrainCircuit className="h-4 w-4 text-white" />
+                      </div>
+                      <div className="bg-card border border-border rounded-2xl rounded-tl-md px-5 py-3.5 shadow-sm">
+                        <div className="flex gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
+                          <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "200ms" }} />
+                          <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "400ms" }} />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div ref={messagesEndRef} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* ===== CHAT FOOTER CONTROLS — locked at bottom ===== */}
+      <div className="chat-footer-controls shrink-0">
+        {/* Suggested chips — visible once a conversation starts */}
+        {!showEmptyState && messages.length > 0 && (
+          <div className="mx-auto max-w-4xl px-4 pt-2 pb-0">
+            <div className="chat-suggested-chips flex flex-wrap gap-2 justify-center sm:justify-start">
+              <button
+                onClick={() => handleSend("Can you explain that in simpler terms?")}
+                className="px-3 py-1.5 rounded-full bg-secondary border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+              >
+                Can you explain that in simpler terms?
+              </button>
+              <button
+                onClick={() => handleSend("Show me a code example")}
+                className="px-3 py-1.5 rounded-full bg-secondary border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+              >
+                Show me a code example
+              </button>
+              <button
+                onClick={() => handleSend("What are the key takeaways?")}
+                className="px-3 py-1.5 rounded-full bg-secondary border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+              >
+                What are the key takeaways?
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Input row */}
         <ChatInput
           onSend={handleSend}
           onStop={stopGeneration}
@@ -305,8 +331,14 @@ export default function AIPage() {
               ? "Ask me anything about engineering..."
               : "Type your message..."
           }
+          hideDisclaimer
         />
-      </main>
+
+        {/* Disclaimer */}
+        <p className="chat-disclaimer mx-auto max-w-4xl text-center text-[11px] text-muted-foreground pb-3">
+          Suresh AI is powered by OpenAI. Responses are generated by AI and may not always be accurate.
+        </p>
+      </div>
     </div>
   );
 }

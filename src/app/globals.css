@@ -103,14 +103,14 @@
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .dark .glass {
-  background: rgba(9, 9, 11, 0.7);
+  background: rgba(9, 9, 11, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -189,4 +189,42 @@ html {
 }
 .dark .card-hover:hover {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== ChatGPT-style chat layout ===== */
+
+.chat-layout-wrapper {
+  position: relative;
+}
+
+.chat-message-history {
+  scroll-behavior: smooth;
+}
+
+.chat-message-history > div {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The message log fills available space, pushing the end ref down */
+.chat-message-history [role="log"] {
+  flex: 1;
+}
+
+.chat-footer-controls {
+  flex-shrink: 0;
+  width: 100%;
+  background: var(--background);
+  border-top: 1px solid var(--color-border);
+}
+
+.chat-suggested-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chat-disclaimer {
+  opacity: 0.7;
 }
