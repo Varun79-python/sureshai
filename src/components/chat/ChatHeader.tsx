@@ -60,7 +60,7 @@ export function ChatHeader({
   }, [showModelPicker, closePicker]);
 
   return (
-    <header className="border-b border-border bg-card/50 backdrop-blur-xl sticky top-0 z-40" role="banner">
+    <header className="shrink-0 border-b border-border bg-card/50 backdrop-blur-xl z-40" role="banner">
       <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* Left side */}
         <div className="flex items-center gap-3">
@@ -80,11 +80,8 @@ export function ChatHeader({
             <div className="hidden sm:block">
               <div className="flex items-center gap-2">
                 <span className="text-base font-bold tracking-tight">
-                  <span className="text-gradient-brand">SUresh AI</span>
+                  <span className="text-gradient-brand">Suresh AI</span>
                 </span>
-                <Badge variant="warning" size="sm" className="text-[10px]">
-                  Unhinged Edition
-                </Badge>
               </div>
               {conversationTitle && (
                 <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">

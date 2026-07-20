@@ -24,8 +24,8 @@ export default function Error({
         </div>
         <h1 className="text-2xl font-bold mb-3">Something Went Wrong</h1>
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          Our servers hit an unexpected error. Our team of AI robots has been notified
-          and is working on it. Probably blaming each other.
+          The server encountered an unexpected error. Our team has been notified
+          and is working on a fix. Please try again shortly.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Button onClick={reset} variant="premium" className="gap-2">

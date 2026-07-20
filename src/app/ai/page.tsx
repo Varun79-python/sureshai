@@ -17,12 +17,12 @@ const WELCOME_FEATURES = [
 ];
 
 const QUICK_QUESTIONS = [
-  "Tell me a joke!",
-  "Explain recursion like I'm 5",
-  "How does a CPU work?",
-  "Best study tips for finals?",
-  "What is REST API?",
-  "Why do programmers prefer dark mode?",
+  "Explain Big O notation with examples",
+  "What is the difference between SQL and NoSQL?",
+  "How does garbage collection work in Java?",
+  "Explain TCP/IP protocol stack",
+  "What is a RESTful API?",
+  "How do hash tables work?",
 ];
 
 export default function AIPage() {
@@ -59,7 +59,6 @@ export default function AIPage() {
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Escape closes sidebar
       if (e.key === "Escape" && sidebarOpen) {
         setSidebarOpen(false);
       }
@@ -76,13 +75,11 @@ export default function AIPage() {
   );
 
   const handleCopy = useCallback((content: string) => {
-    const cleaned = content.replace(/\*\*/g, "").replace(/`/g, "");
-    navigator.clipboard.writeText(cleaned).catch(() => {});
+    navigator.clipboard.writeText(content).catch(() => {});
   }, []);
 
   const handleSpeak = useCallback((content: string) => {
     if (!("speechSynthesis" in window)) return;
-    // Cancel any ongoing speech first
     speechSynthesis.cancel();
     const clean = content
       .replace(/```[\s\S]*?```/g, "code block omitted")
@@ -90,8 +87,8 @@ export default function AIPage() {
       .replace(/[*_#~>]/g, "")
       .replace(/[^\w\s.,!?;:'\-\n]/g, "");
     const utterance = new SpeechSynthesisUtterance(clean);
-    utterance.rate = 1.1;
-    utterance.pitch = 1.2;
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
     speechSynthesis.speak(utterance);
   }, []);
 
@@ -112,7 +109,7 @@ export default function AIPage() {
   const lastAssistantId = lastAssistantMsg?.id ?? null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="h-full flex flex-col bg-background overflow-hidden">
       {/* Sidebar */}
       <ChatSidebar
         conversations={conversations}
@@ -138,8 +135,8 @@ export default function AIPage() {
       />
 
       {/* Main chat area */}
-      <main className="flex-1 flex flex-col" role="main">
-        <div ref={chatContainerRef} className="flex-1 overflow-y-auto">
+      <main className="flex-1 flex flex-col overflow-hidden" role="main">
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto min-h-0">
           <div className="max-w-3xl mx-auto px-4 py-6">
             <AnimatePresence mode="wait">
               {showEmptyState ? (
@@ -169,7 +166,7 @@ export default function AIPage() {
                     transition={{ delay: 0.2 }}
                     className="text-3xl sm:text-4xl font-bold mb-2"
                   >
-                    <span className="text-gradient-brand">SUresh AI</span>
+                    <span className="text-gradient-brand">Suresh AI</span>
                   </motion.h1>
 
                   <motion.p
@@ -178,8 +175,8 @@ export default function AIPage() {
                     transition={{ delay: 0.3 }}
                     className="text-muted-foreground mb-8 max-w-md"
                   >
-                    Your personal AI engineering buddy. Ask anything — from code debugging to exam
-                    prep. I promise to be helpful... and maybe a little unhinged.
+                    Your personal AI engineering tutor. Ask about algorithms, data structures,
+                    system design, interview prep, or any engineering topic.
                   </motion.p>
 
                   {/* Feature grid */}
@@ -220,9 +217,9 @@ export default function AIPage() {
                   >
                     <p className="text-xs text-muted-foreground mb-3 font-medium">
                       <Sparkles className="h-3 w-3 inline mr-1" aria-hidden="true" />
-                      Quick starters
+                      Suggested questions
                     </p>
-                    <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Quick starter questions">
+                    <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Suggested questions">
                       {QUICK_QUESTIONS.map((q) => (
                         <button
                           key={q}
@@ -253,7 +250,7 @@ export default function AIPage() {
                       isStreaming={msg.isStreaming}
                       onCopy={handleCopy}
                       onRegenerate={
-                        msg.role === "assistant" && !isTyping
+                        msg.role === "assistant" && !isTyping && !msg.error
                           ? () => regenerateMessage(msg.id)
                           : undefined
                       }
@@ -305,7 +302,7 @@ export default function AIPage() {
           isTyping={isTyping}
           placeholder={
             showEmptyState
-              ? "Ask me anything... I dare you."
+              ? "Ask me anything about engineering..."
               : "Type your message..."
           }
         />

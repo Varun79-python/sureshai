@@ -17,13 +17,65 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const BASE_URL = "https://sureshai.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     default: "Suresh.AI — AI-Powered Engineering Learning Platform",
     template: "%s | Suresh.AI",
   },
   description:
     "Master engineering with AI-powered learning. Access 10,000+ questions, 500+ topics, notes, MCQs, interview prep, PYQs, and personalized roadmaps.",
+  keywords: [
+    "engineering",
+    "AI tutor",
+    "computer science",
+    "data structures",
+    "algorithms",
+    "interview prep",
+    "MCQs",
+    "study notes",
+    "engineering exams",
+    "Suresh AI",
+  ],
+  authors: [{ name: "Suresh.AI" }],
+  creator: "Suresh.AI",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://sureshai.vercel.app",
+    siteName: "Suresh.AI",
+    title: "Suresh.AI — AI-Powered Engineering Learning Platform",
+    description:
+      "Master engineering with AI-powered learning. Access 10,000+ questions, 500+ topics, notes, MCQs, interview prep, PYQs, and personalized roadmaps.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Suresh.AI - Engineering Learning Platform",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Suresh.AI — AI-Powered Engineering Learning Platform",
+    description:
+      "Master engineering with AI-powered learning. Access 10,000+ questions, 500+ topics, notes, MCQs, interview prep, PYQs, and personalized roadmaps.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({

@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/auth/", "/dashboard/"],
       },
     ],
-    sitemap: "https://suresh.ai/sitemap.xml",
+    sitemap: "https://sureshai.vercel.app/sitemap.xml",
   };
 }

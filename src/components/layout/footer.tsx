@@ -5,7 +5,6 @@ import {
   MessageCircle,
   Briefcase,
   Mail,
-  Heart,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -43,12 +42,10 @@ const footerLinks = [
     ],
   },
   {
-    title: "Platform",
+    title: "Account",
     links: [
       { label: "Dashboard", href: "/dashboard" },
       { label: "Sign In", href: "/auth" },
-      { label: "Subjects", href: "/subjects" },
-      { label: "Roadmaps", href: "/roadmaps" },
     ],
   },
 ];
@@ -129,10 +126,6 @@ export function Footer() {
         </div>
 
         <div className="mt-6 text-center text-xs text-muted-foreground">
-          <p className="flex items-center justify-center gap-1">
-            Made with <Heart className="h-3 w-3 text-danger inline" /> for
-            engineering students everywhere.
-          </p>
           <p className="mt-1">
             &copy; {new Date().getFullYear()} Suresh.AI. All rights reserved.
           </p>

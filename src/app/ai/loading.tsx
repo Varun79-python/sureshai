@@ -45,7 +45,7 @@ export default function AILoading() {
             {/* Quick starters skeleton */}
             <div className="flex flex-wrap justify-center gap-2 w-full max-w-md">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <Skeleton key={i} className="h-9 rounded-xl" style={{ width: `${80 + Math.random() * 60}px` }} />
+                <Skeleton key={i} className="h-9 rounded-xl flex-1 min-w-[100px] max-w-[140px]" />
               ))}
             </div>
           </div>

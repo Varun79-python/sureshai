@@ -27,7 +27,7 @@ export default function AIError({
         </div>
         <h2 className="text-2xl font-bold mb-2">Something went wrong</h2>
         <p className="text-muted-foreground mb-2">
-          SUresh AI hit an unexpected error. This usually resolves on its own.
+          Suresh AI hit an unexpected error. This usually resolves on its own.
         </p>
 
         {isDev && error.message && (
