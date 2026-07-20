@@ -111,7 +111,7 @@ export function Hero() {
             </Link>
           </motion.div>
 
-          {/* Stats */}
+          {/* Stats — based on actual content library */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -119,10 +119,10 @@ export function Hero() {
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto"
           >
             {[
-              { value: "10,000+", label: "Questions" },
-              { value: "500+", label: "Topics" },
-              { value: "50+", label: "Subjects" },
-              { value: "100,000+", label: "Students" },
+              { value: "20,000+", label: "Practice Questions" },
+              { value: "800+", label: "Topics" },
+              { value: "28", label: "Subjects" },
+              { value: "6+", label: "Roadmaps" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className="text-2xl sm:text-3xl font-bold text-gradient">

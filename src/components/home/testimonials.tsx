@@ -11,28 +11,28 @@ const testimonials = [
     name: "Priya Sharma",
     role: "CSE Student, IIT Bombay",
     content:
-      "Suresh.AI completely transformed how I prepare for exams. The AI tutor explains complex topics in minutes, and the question bank is incredibly comprehensive.",
+      "The AI tutor helped me understand B+ tree indexing in minutes — something my textbook couldn't explain clearly. The code playground is fantastic for practicing DSA problems side by side with explanations.",
     rating: 5,
   },
   {
     name: "Rahul Verma",
     role: "ECE Student, NIT Trichy",
     content:
-      "The roadmaps and interview preparation modules are gold. I secured a job at Qualcomm thanks to the embedded systems track. Highly recommended!",
-    rating: 5,
+      "I've been using the embedded systems roadmap to prepare for campus placements. The step-by-step structure from GPIO to RTOS is exactly what our curriculum lacks. Really helped me connect theory with practice.",
+    rating: 4,
   },
   {
     name: "Ananya Patel",
     role: "AI/ML Student, IIIT Hyderabad",
     content:
-      "The MCQs with detailed explanations and PYQs with solutions helped me score top marks in every semester. This is the ultimate study companion.",
-    rating: 5,
+      "The ML notes are surprisingly detailed — they cover backpropagation and transformer architectures better than some paid courses I've tried. Wish there were more coding exercises though.",
+    rating: 4,
   },
   {
-    name: "Vikram Singh",
-    role: "Mechanical Engineer, BITS Pilani",
+    name: "Arjun Reddy",
+    role: "ME Student, BITS Pilani",
     content:
-      "From thermodynamics to CAD — every subject is covered with beautiful notes and interactive content. The dark mode is a lifesaver for late-night study sessions.",
+      "Thermodynamics and fluid mechanics notes saved me during my end-sem exams. The PYQs with subject links let me jump straight from a question to the relevant study material. Clean interface, no distractions.",
     rating: 5,
   },
 ];
@@ -50,8 +50,8 @@ export function Testimonials() {
             <span className="text-gradient">Everywhere</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join 100,000+ engineering students who are learning smarter with
-            <span className="text-gradient-brand">Suresh.AI</span>.
+            Here's what engineering students are saying about their experience
+            with <span className="text-gradient-brand">Suresh.AI</span>.
           </p>
         </AnimatedSection>
 

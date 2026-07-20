@@ -6,7 +6,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AnimatedSection } from "@/components/shared/animated-section";
-import { Search, FileText, Download, Calendar, GraduationCap, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { Search, FileText, Download, Calendar, GraduationCap, ExternalLink, BookOpen } from "lucide-react";
+
+const subjectSlugs: Record<string, string> = {
+  "Data Structures": "/subjects/data-structures",
+  "Operating Systems": "/subjects/operating-systems",
+  "DBMS": "/subjects/dbms",
+  "Computer Networks": "/subjects/computer-networks",
+  "General Aptitude": "/subjects/probability-statistics",
+  "Computer Science": "/subjects/dsa",
+  "Machine Learning": "/subjects/machine-learning",
+  "Electronics": "/subjects/digital-electronics",
+  "Python Programming": "/subjects/python-programming",
+  "Aptitude": "/subjects/probability-statistics",
+  "Digital Electronics": "/subjects/digital-electronics",
+  "Thermodynamics": "/subjects/thermodynamics",
+};
 
 const pyqs = [
   { year: 2024, exam: "Semester Exam", subject: "Data Structures", questions: 8, downloads: 3400 },
@@ -93,9 +109,18 @@ export default function PYQsPage() {
                       <Download className="h-3 w-3" /> {pyq.downloads.toLocaleString()}
                     </span>
                   </div>
-                  <Button variant="outline" size="sm" className="w-full mt-3 gap-2 group-hover:border-primary/30">
-                    <ExternalLink className="h-4 w-4" /> View Paper
-                  </Button>
+                  <div className="flex gap-2 mt-3">
+                    <Link href={subjectSlugs[pyq.subject] || "/subjects"} className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full gap-2 group-hover:border-primary/30">
+                        <BookOpen className="h-4 w-4" /> Study Material
+                      </Button>
+                    </Link>
+                    <Link href={`/ai`} className="flex-1">
+                      <Button variant="premium" size="sm" className="w-full gap-2">
+                        <ExternalLink className="h-4 w-4" /> Solve with AI
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </AnimatedSection>

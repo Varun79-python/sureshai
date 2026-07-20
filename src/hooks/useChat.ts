@@ -37,21 +37,21 @@ const STORAGE_KEY = "suresh-ai-conversations";
 // ─── Model Config ──────────────────────────────────────────────────────────────
 
 const MODEL_CONFIG: Record<AIModel, { name: string; description: string; icon: string }> = {
-  suresh: { name: "Suresh AI", description: "Fast & efficient engineering tutor", icon: "⚡" },
+  suresh: { name: "Suresh AI", description: "All-purpose engineering tutor", icon: "⚡" },
   "suresh-pro": { name: "Suresh Pro", description: "In-depth technical explanations", icon: "🧠" },
   "suresh-reasoning": { name: "Suresh Think", description: "Step-by-step problem solving", icon: "💭" },
 };
 
-// ─── Fallback Responses (used when API is unavailable) ──────────────────────────
+// ─── Fallback Responses (used when fetch fails) ────────────────────────────────
 
 const FALLBACK_RESPONSE =
-  "I'm currently in offline mode. Please configure your OpenAI API key in the `.env` file to enable full AI responses. In the meantime, you can explore the subjects, notes, and practice questions available on the platform.";
+  "I'm having trouble connecting to the response service. Your messages are saved locally and will be available when connectivity resumes. In the meantime, you can explore the subjects, notes, and practice questions available on the platform.";
 
 const FALLBACK_FOLLOW_UPS = [
-  "How do I set up the OpenAI API key?",
   "What subjects are available?",
   "Show me the interview prep section",
   "Take me to the notes",
+  "Explain Big O notation",
 ];
 
 // ─── Follow-up generators ──────────────────────────────────────────────────────
@@ -245,7 +245,7 @@ export function useChat() {
 
         const data = await response.json();
         const content = data.content || "";
-        const followUps = generateFollowUps(content, currentModel);
+        const followUps = data.followUps || generateFollowUps(content, currentModel);
 
         if (!mountedRef.current) return;
 

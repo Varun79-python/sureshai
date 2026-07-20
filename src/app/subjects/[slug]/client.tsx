@@ -2,13 +2,14 @@
 
 import { subjects, getSubjectBySlug } from "@/lib/data/subjects";
 import { questions, mcqs, getQuestionsBySubject, getMCQsBySubject } from "@/lib/data/questions";
+import { getSubjectContent } from "@/lib/data/subject-content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   BookOpen, Clock, FileText, PenSquare, MessageSquare,
   ChevronRight, Bookmark, Download, Share2, ArrowLeft,
-  CheckCircle2, PlayCircle,
+  CheckCircle2, PlayCircle, Sparkles, ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -31,14 +32,15 @@ export function SubjectDetailClient({ slug }: { slug: string }) {
 
   const subjectQuestions = getQuestionsBySubject(slug);
   const subjectMcqs = getMCQsBySubject(slug);
+  const content = getSubjectContent(slug);
 
-  const topics = [
+  const topics = content?.topics ?? [
     { name: "Introduction", completed: true },
     { name: "Basic Concepts", completed: true },
     { name: "Core Principles", completed: false },
     { name: "Advanced Topics", completed: false },
-    { name: "Applications", completed: false },
-    { name: "Interview Questions", completed: false },
+    { name: "Practical Applications", completed: false },
+    { name: "Review & Assessment", completed: false },
   ];
 
   return (
@@ -177,8 +179,19 @@ export function SubjectDetailClient({ slug }: { slug: string }) {
           <TabsContent value="questions" className="mt-6">
             <div className="space-y-4">
               {subjectQuestions.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                  Questions coming soon for this subject.
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-secondary flex items-center justify-center">
+                    <PenSquare className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Questions Being Added</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Practice questions for this subject are being written by our educators. In the meantime, ask Suresh AI to generate custom practice problems for you.
+                  </p>
+                  <Link href="/ai">
+                    <Button variant="premium" size="sm" className="gap-2">
+                      <Sparkles className="h-4 w-4" /> Ask AI Tutor
+                    </Button>
+                  </Link>
                 </div>
               )}
               {subjectQuestions.map((q, i) => (
@@ -219,8 +232,26 @@ export function SubjectDetailClient({ slug }: { slug: string }) {
           <TabsContent value="mcqs" className="mt-6">
             <div className="space-y-6">
               {subjectMcqs.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                  MCQs coming soon for this subject.
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-secondary flex items-center justify-center">
+                    <CheckCircle2 className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">MCQs Being Added</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Multiple choice questions for {subject.name} are being curated. Browse available MCQs from other subjects or ask Suresh AI to quiz you on this topic.
+                  </p>
+                  <div className="flex items-center justify-center gap-3">
+                    <Link href="/mcqs">
+                      <Button variant="outline" size="sm" className="gap-2">
+                        Browse All MCQs
+                      </Button>
+                    </Link>
+                    <Link href="/ai">
+                      <Button variant="premium" size="sm" className="gap-2">
+                        <Sparkles className="h-4 w-4" /> Practice with AI
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               )}
               {subjectMcqs.map((mcq, i) => (
@@ -256,18 +287,23 @@ export function SubjectDetailClient({ slug }: { slug: string }) {
 
           <TabsContent value="notes" className="mt-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[1, 2, 3, 4].map((i) => (
+              {(content?.chapters ?? [
+                { title: `${subject.name} — Fundamentals`, description: "Core concepts and foundational principles with detailed explanations and examples.", readTime: "15 min" },
+                { title: `${subject.name} — Advanced Topics`, description: "In-depth coverage of advanced topics with problem-solving techniques and applications.", readTime: "20 min" },
+                { title: `${subject.name} — Practical Applications`, description: "Real-world applications, case studies, and hands-on practice problems.", readTime: "15 min" },
+                { title: `${subject.name} — Exam Preparation Guide`, description: "Comprehensive review with key formulas, quick references, and practice question sets.", readTime: "20 min" },
+              ]).map((chapter, i) => (
                 <AnimatedSection key={i} delay={i * 0.05}>
                   <div className="rounded-2xl border border-border bg-card p-6 hover:border-primary/20 transition-all cursor-pointer group">
                     <Badge variant="secondary" size="sm" className="mb-2">{subject.name}</Badge>
                     <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
-                      {subject.name} — Chapter {i}
+                      {chapter.title}
                     </h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Comprehensive notes covering key concepts, definitions, examples, and practice problems.
+                      {chapter.description}
                     </p>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> 15 min read</span>
+                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {chapter.readTime}</span>
                       <span className="flex items-center gap-1"><Download className="h-3 w-3" /> PDF</span>
                       <span className="flex items-center gap-1"><Share2 className="h-3 w-3" /> Share</span>
                     </div>
@@ -281,17 +317,27 @@ export function SubjectDetailClient({ slug }: { slug: string }) {
             <div className="rounded-2xl border border-border bg-card p-6">
               <h2 className="text-xl font-semibold mb-4">Recommended Resources</h2>
               <div className="space-y-4">
-                {[
-                  { name: "Textbook", desc: "Standard university textbook for this subject" },
-                  { name: "Video Lectures", desc: "NPTEL and YouTube playlists" },
-                  { name: "Reference Books", desc: "Additional reading materials" },
-                  { name: "Online Courses", desc: "Coursera, edX, and other platforms" },
-                ].map((res) => (
-                  <div key={res.name} className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary/50 transition-colors">
-                    <PlayCircle className="h-5 w-5 text-primary" />
+                {(content?.resources ?? [
+                  { name: "Standard Textbook", description: "Comprehensive textbook aligned with the curriculum", type: "book" },
+                  { name: "Video Lecture Series", description: "NPTEL and YouTube playlists by IIT professors", type: "video" },
+                  { name: "Reference Materials", description: "Additional books and online resources", type: "reference" },
+                  { name: "Online Course", description: "Structured learning on Coursera, edX, or MIT OCW", type: "course" },
+                ]).map((res, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary/50 transition-colors">
+                    <div className={`p-2 rounded-lg ${
+                      res.type === "book" ? "bg-blue-500/10 text-blue-500" :
+                      res.type === "video" ? "bg-red-500/10 text-red-500" :
+                      res.type === "course" ? "bg-green-500/10 text-green-500" :
+                      "bg-purple-500/10 text-purple-500"
+                    }`}>
+                      {res.type === "book" ? <BookOpen className="h-4 w-4" /> :
+                       res.type === "video" ? <PlayCircle className="h-4 w-4" /> :
+                       res.type === "course" ? <Sparkles className="h-4 w-4" /> :
+                       <ExternalLink className="h-4 w-4" />}
+                    </div>
                     <div>
                       <p className="text-sm font-medium">{res.name}</p>
-                      <p className="text-xs text-muted-foreground">{res.desc}</p>
+                      <p className="text-xs text-muted-foreground">{res.description}</p>
                     </div>
                   </div>
                 ))}

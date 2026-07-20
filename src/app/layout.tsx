@@ -17,7 +17,7 @@ const manrope = Manrope({
   display: "swap",
 });
 
-const BASE_URL = "https://sureshai.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sureshai.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -89,7 +89,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${manrope.variable}`}
     >
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="min-h-screen flex flex-col bg-background font-sans antialiased">
         <ThemeProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

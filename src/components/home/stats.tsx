@@ -4,12 +4,12 @@ import { AnimatedSection, AnimatedCounter } from "@/components/shared/animated-s
 import { BookOpen, Users, Award, Star, Brain, FileText } from "lucide-react";
 
 const stats = [
-  { icon: BookOpen, value: 500, suffix: "+", label: "Topics Covered" },
-  { icon: Brain, value: 10000, suffix: "+", label: "Practice Questions" },
-  { icon: FileText, value: 2000, suffix: "+", label: "Study Notes" },
-  { icon: Users, value: 100000, suffix: "+", label: "Active Students" },
-  { icon: Award, value: 50, suffix: "+", label: "Subjects" },
-  { icon: Star, value: 4.9, suffix: "", label: "Avg. Rating" },
+  { icon: BookOpen, value: 800, suffix: "+", label: "Topics Covered" },
+  { icon: Brain, value: 20000, suffix: "+", label: "Practice Questions" },
+  { icon: FileText, value: 400, suffix: "+", label: "Study Notes & Guides" },
+  { icon: Award, value: 28, suffix: "", label: "Engineering Subjects" },
+  { icon: Users, value: 6, suffix: "+", label: "Learning Roadmaps" },
+  { icon: Star, value: 4.5, suffix: "", label: "Content Rating" },
 ];
 
 export function Stats() {

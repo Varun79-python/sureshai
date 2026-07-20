@@ -108,7 +108,7 @@ export default function AIPage() {
   const lastAssistantId = lastAssistantMsg?.id ?? null;
 
   return (
-    <div className="h-full flex flex-col bg-background overflow-hidden">
+    <div className="h-full flex flex-col bg-background overflow-hidden pt-16">
       {/* Sidebar */}
       <ChatSidebar
         conversations={conversations}

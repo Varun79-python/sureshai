@@ -33,12 +33,11 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com",
+      "img-src 'self' data: blob:",
       "font-src 'self' data:",
-      "connect-src 'self' https://api.openai.com https://o4504806722273280.ingest.us.sentry.io",
-      "frame-src 'self' https://vercel.live",
+      "connect-src 'self'",
       "media-src 'self'",
       "object-src 'none'",
       "base-uri 'self'",
@@ -49,18 +48,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-      },
-    ],
-  },
+  images: {},
   async headers() {
     return [
       {

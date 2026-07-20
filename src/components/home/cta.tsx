@@ -22,8 +22,8 @@ export function CTA() {
             <span className="text-gradient">Engineering</span>?
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            Join 100,000+ engineering students who are already learning smarter
-            with AI-powered notes, questions, and personalized roadmaps.
+            Join thousands of engineering students who are learning smarter
+            with AI-powered notes, practice questions, and personalized roadmaps.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/subjects">

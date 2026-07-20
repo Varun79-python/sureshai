@@ -158,7 +158,7 @@ export function FeaturedSubjects() {
         <AnimatedSection className="text-center mt-10">
           <Link href="/subjects">
             <span className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary-dark transition-colors">
-              View all 50+ subjects
+              View all 28 subjects
               <span aria-hidden="true">→</span>
             </span>
           </Link>
