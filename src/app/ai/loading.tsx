@@ -3,23 +3,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function AILoading() {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header skeleton */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Skeleton className="w-9 h-9 rounded-xl" />
-            <div>
-              <Skeleton className="h-5 w-24 mb-1" />
-              <Skeleton className="h-3 w-32" />
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-8 w-20 rounded-lg" />
-            <Skeleton className="h-8 w-8 rounded-lg" />
-          </div>
-        </div>
-      </div>
-
       {/* Chat area skeleton */}
       <div className="flex-1 overflow-hidden">
         <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">

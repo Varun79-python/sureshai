@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, BrainCircuit, Code, BookOpen, GraduationCap, Rocket } from "lucide-react";
 import { useChat } from "@/hooks/useChat";
-import { ChatHeader } from "@/components/chat/ChatHeader";
 import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
@@ -122,17 +121,18 @@ export default function AIPage() {
         onClose={() => setSidebarOpen(false)}
       />
 
-      {/* Header */}
-      <ChatHeader
-        currentModel={currentModel}
-        models={models}
-        onModelChange={setCurrentModel}
-        onReset={handleReset}
-        onExport={activeConversation ? exportConversation : undefined}
-        onToggleSidebar={() => setSidebarOpen(true)}
-        conversationTitle={activeConversation?.title}
-        messageCount={messages.length}
-      />
+      {/* Floating sidebar toggle */}
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="fixed top-20 left-4 z-50 p-2.5 rounded-xl bg-card border border-border shadow-lg hover:bg-secondary transition-colors lg:hidden"
+        aria-label="Open conversation sidebar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
 
       {/* Main chat area */}
       <main className="flex-1 flex flex-col overflow-hidden" role="main">
